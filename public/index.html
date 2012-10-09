@@ -1,0 +1,39 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+
+	<script type="text/javascript" src="lib/socket.io.js"></script>
+	<script type="text/javascript" src="lib/jquery-1.8.2.min.js"></script>
+	<script type="text/javascript" src="lib/underscore-min.js"></script>
+	<script type="text/javascript" src="ibridge.js"></script>
+	<style>
+	.colorstatus {
+		width: 75;
+		height: 75;
+		display: block;
+		color: white;
+		border: 2px solid black;
+		text-align: center;
+		background-color: red;
+		margin: 1em;
+	}
+	ul {
+		list-style-type: none;
+	}
+	.stati {
+		float: left;
+	}
+	.greenstatus {
+		background-color: green;
+	}
+	</style>
+</head>
+<body>
+	<div class="stati">
+		<span id="clientconnected" class='colorstatus'>Client</span>
+		<span id="serverconnected" class='colorstatus'>Server</span>
+	</div>
+	<div id='count'></div>
+	<ul id='status'></ul>
+</body>
+</html>
