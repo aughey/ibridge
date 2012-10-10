@@ -18,10 +18,19 @@ public:
 		std::cout << "Got loaded signal\n";
 		QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
 		Q_FOREACH(const QNetworkInterface &iface, interfaces) {
+			if(!(iface.flags() & QNetworkInterface::IsUp))
+				continue;
+			if(!(iface.flags() & QNetworkInterface::IsRunning))
+				continue;
+			if((iface.flags() & QNetworkInterface::IsLoopBack))
+				continue;
+			printf("0x%x\n",(int)iface.flags());
 			QStringList addresses;
 			Q_FOREACH(const QNetworkAddressEntry &address, iface.addressEntries()) {
 				addresses << QString("\'") + address.ip().toString() + "\'";
 			}
+			if(addresses.empty())
+				continue;
 			exec(QString("ui_event('%1',%2)").arg("address").arg(
 					QString("{ interface: '%1', addresses: [%2] }").arg(iface.humanReadableName()).arg(addresses.join(","))
 				));
