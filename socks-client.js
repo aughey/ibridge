@@ -11,7 +11,7 @@ var server = common.newServer(argv['p'], [
 
 
 // Handle the ping message
-server.newEndpoint('p', function() {
+server.newGlobalEndpoint('p', function() {
 });
 
 var net = require('net'),
@@ -21,14 +21,14 @@ function createRemoteConnection(port,address,proxy_ready) {
 	var emitter = new events.EventEmitter;
 	function handle_connect(connect_data) {
 		returnobj.write = function(data) {
-			server.sendMessage({
+			ep.sendMessage({
 				c:connect_data.i,
 				s: ep.id,
 				d:data.toString('binary')});
 		}
 		returnobj.close = function() {
 			//console.log("Asked to close endpoint id " + ep.id);
-			server.sendMessage({c:'x', i:connect_data.i})
+			ep.sendMessage({c:'x', i:connect_data.i})
 			ep.close();
 		}
 		returnobj.end = returnobj.close;
@@ -57,7 +57,7 @@ function createRemoteConnection(port,address,proxy_ready) {
 		}
 		
 	}
-	server.sendMessage({c:'open', i:ep.id, host: address, port: port})
+	ep.sendMessage({c:'open', i:ep.id, host: address, port: port})
 	return returnobj;
 }
 

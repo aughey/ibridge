@@ -36,7 +36,7 @@ function check_ping() {
 }
 
 // Handle the ping message
-server.newEndpoint('p',function() {
+server.newGlobalEndpoint('p',function() {
 	check_ping();
 });
 
