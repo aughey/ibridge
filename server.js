@@ -1,6 +1,6 @@
 var common = require("./common");
 var net = require('net');
-var argv = require('optimist').boolean('o').argv;
+var argv = require('optimist').boolean('o').describe('o','Allow open connections to any remote host').argv;
 
 var server = common.newServer(argv['p'] || 3001);
 var openconnection = argv.o || false

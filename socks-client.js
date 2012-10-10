@@ -3,8 +3,7 @@ var net = require('net');
 var events = require('events');
 var argv = require('optimist')['default']({
 	p: 3000,
-	e: null
-}).demand('s').argv;
+}).demand('s').describe('s', 'server address.  eg. http://server.slicehost.com:3001').describe('p','Local http server port').argv;
 
 var server = common.newServer(argv['p'], [
 	['/serveraddress', argv.s]
