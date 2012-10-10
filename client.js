@@ -1,6 +1,6 @@
 var common = require("./common");
 var net = require('net');
-var argv = require('optimist')['default']({p:3000,e:null}).demand('s').argv;
+var argv = require('optimist')['default']({p:3000,e:null}).demand('s').describe('e','command to run when tunnel is active.  eg.  "ssh -N localhost -D 11111 -p 12345"').describe('s','Remote server url').argv;
 
 var server = common.newServer(argv['p'],[['/serveraddress',argv.s]]);
 

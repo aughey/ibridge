@@ -18,7 +18,7 @@ access to a computer.
 > to explain the operation and use of the software.  The requirements
 > are similar for other use cases.
 
-iBridge requires three device.  A server computer on the public Internet.
+iBridge requires three devices.  A server computer on the public Internet.
 A client computer that you wish to connect to the public Internet.  And
 a smart phone device.
 
@@ -93,6 +93,22 @@ I recommend above, you will know the address.  And it will always be the same.
 1 Opera browser and go the "Tools" menu at the top navigation bar. Click on Preferences.
 2 Go to "Advanced" tab. At the left hand side you will see a bunch of configuration options. Click on the Network. It should be something very similar to the picture below. Once you are on the Network Setting the fist button at the top will say Proxy Servers. Click on that button.
 3 Now you must enter the IP address or your Proxy Server host. The settings will be saved after you confirm all the windows by clicking OK button. After that they will become active immediately. If the proxy requires a username and password you will be asked to reload.
+
+## Advanced Usage
+
+There is also a client.js application that creates a tunnel to the remote ssh port.
+This can be used to establish a more secure connection to the remote computer using
+ssh.  The native ssh tunneling can be used to create remote connections.
+
+To use this application, the -o option is unnecessary on the server and I recommend
+you do not use it.
+
+On the client side, the -s option is still required.  A -e option is optional and will
+be the command that is executed once the tunnel is detected to be operational.  A
+recommended -e option is 'ssh -N localhost -D 11111 -p 12345' which will create a local SOCKS
+server on port 11111.
+
+This usage is possibly more secure, but levies additional requirements on the server.
 
 ## Theory of Operation
 
