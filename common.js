@@ -1,3 +1,6 @@
+var events = require('events')
+var _ = require("./public/lib/underscore-min.js");
+
 exports.newServer = function(port,static) {
   static = static || [];
   var URL=require('url');
@@ -39,6 +42,9 @@ exports.newServer = function(port,static) {
   var endpointindex = 0;
 
   function createEndpoints(socket) {
+    var emitter = new events.EventEmitter;
+
+    // Handle data on this socket
     socket.on('data', function(data) {
       var handler = endpoints[data['c']];
       if(!handler) {
@@ -50,6 +56,8 @@ exports.newServer = function(port,static) {
         handler[0](data);
       }
     });
+
+    // Handle the disconnect message
     socket.on('disconnect', function() {
       for(var key in endpoints) {
         var ep = endpoints[key];
@@ -58,6 +66,8 @@ exports.newServer = function(port,static) {
         }
       }
       endpoints = {}
+      emitter.emit('end');
+      emitter.removeAllListeners();
     });
 
     var endpoints = {}
@@ -98,23 +108,30 @@ exports.newServer = function(port,static) {
     for(var ep in global_endpoints) {
       newEndPoint(ep[0],ep[1]);
     }
+
     return {
       newEndpoint: function(id, calllback, shutdown) {
         newEndpoint(id,callback,shutdown);
       },
       sendMessage: function(msg) {
         socket.emit('data',msg);
-      }
+      },
+      emitter: emitter
     }
   }
 
   var global_endpoints = [];
 
+  var connected_endpoints = [];
   io.sockets.on('connection', function(socket) {
     console.log("Got socket.io connection")
 
     var endpoints = createEndpoints(socket);
-    
+    connected_endpoints.push(endpoints);
+    endpoints.emitter.on('end',function() {
+      console.log("removing endpoints");
+      connected_endpoints = connected_endpoints.without(endpoints);
+    })
   })
 
 
@@ -124,5 +141,12 @@ exports.newServer = function(port,static) {
     newGlobalEndpoint: function(id, cb) {
       global_endpoints.push([id,cb])
     },
+    endpoint: function() {
+      if(connected_endpoints.length == 0) {
+        return null;
+      } else {
+        return connected_endpoints[connected_endpoints.length-1];
+      }
+    }
   }
 }
