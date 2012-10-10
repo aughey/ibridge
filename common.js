@@ -85,7 +85,10 @@ exports.newServer = function(port,static) {
     socket.on('data', function(data) {
       var handler = endpoints[data['c']];
       if(!handler) {
-        console.log("Got message for invalid handler " + data['c']);
+        if(data['s']) {
+          // Tell that remote connection to disconnect
+          sendMessage({c: 'x', i: data['s']})
+        }
       } else {
         handler[0](data);
       }

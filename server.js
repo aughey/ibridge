@@ -28,6 +28,7 @@ server.newEndpoint('open', function(open_data) {
 		c.on('data', function(d) {
 			server.sendMessage({
 				c: open_data.i,
+				s: ep.id,
 				d: d.toString('binary')
 			});
 		})

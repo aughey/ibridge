@@ -22,10 +22,13 @@ function createRemoteConnection(port,address,proxy_ready) {
 	var emitter = new events.EventEmitter;
 	function handle_connect(connect_data) {
 		returnobj.write = function(data) {
-			server.sendMessage({c:connect_data.i,d:data.toString('binary')});
+			server.sendMessage({
+				c:connect_data.i,
+				s: ep.id,
+				d:data.toString('binary')});
 		}
 		returnobj.close = function() {
-			console.log("Asked to close endpoint");
+			//console.log("Asked to close endpoint id " + ep.id);
 			server.sendMessage({c:'x', i:connect_data.i})
 			ep.close();
 		}
@@ -49,6 +52,9 @@ function createRemoteConnection(port,address,proxy_ready) {
 		},
 		removeAllListeners: function() {
 			emitter.removeAllListeners.apply(emitter,arguments);
+		},
+		end: function() {
+			ep.close();
 		}
 		
 	}
@@ -88,12 +94,9 @@ var HOST = '127.0.0.1',
 			//console.error('The proxy closed');
 		}.bind(this));
 		socket.on('close', function(had_error) {
-			console.log(this.proxy);
-			if(this.proxy !== undefined) {
-				proxy.removeAllListeners('data');
-				proxy.end();
-			}
-			console.error('The application closed');
+			proxy.removeAllListeners('data');
+			proxy.end();
+			//console.error('The application closed');
 		}.bind(this));
 
 	});
