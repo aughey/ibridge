@@ -114,9 +114,9 @@ This usage is possibly more secure, but levies additional requirements on the se
 iBridge leverages several third party packages.
 
 * socket.io for websocket handling http://socket.io
-* optimist for command line option parsing
-* jquery for DOM processing on the browser
-* underscore.js for javascript utility functions
+* optimist for command line option parsing https://github.com/substack/node-optimist
+* jquery for DOM processing on the browser http://jquery.com/
+* underscore.js for javascript utility functions http://underscorejs.org
 * node-socks for native SOCKSv5 handling https://github.com/gvangool/node-socks
 * jquery-qrcode for generating qr codes in the ui http://github.com/jeromeetienne/jquery-qrcode
 
