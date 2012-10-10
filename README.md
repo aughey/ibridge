@@ -14,4 +14,4 @@ access to a computer.
 
 ## Theory of Operation
 
-http://github.com/aughey/ibridge/THEORY.md
+Hard core users can read up on the theory of operation https://github.com/aughey/ibridge/blob/master/THEORY.md
