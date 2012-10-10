@@ -51,9 +51,8 @@ environment.  Some guidance is available below.
 ### Adhoc wireless network.
 
 Do a google search for a procedure for your operating system.  It's not hard,
-but may take some research.  One issue I've had is the IP addressing not being automatic.
-I'll typically force the IP address on both the client computer and the smart phone
-so I know what it is going to be.  This is important for step 5.
+but may take some research.  One issue I've had is the IP addressing not being automaticly assigned.
+I recommend using a static IP address on both the client computer and the smart phone.  This is important for step 5.
 
 ### Finding the client adhoc network address
 
