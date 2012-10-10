@@ -118,6 +118,7 @@ iBridge leverages several third party packages.
 * jquery for DOM processing on the browser
 * underscore.js for javascript utility functions
 * node-socks for native SOCKSv5 handling https://github.com/gvangool/node-socks
+* jquery-qrcode for generating qr codes in the ui http://github.com/jeromeetienne/jquery-qrcode
 
 ## Theory of Operation
 
