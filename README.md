@@ -43,7 +43,7 @@ the public Internet.
 3. Connect the smart phone to this wireless network.
 4. Run the client application on the client computer by running 'node socks-client.js -s http://SERVER_INTERNET_ADDRESS:3001'
 5. Open up the web browser on the phone and connect to http://CLIENT_ADHOC_NETWORK_ADDRESS:3000
-6. Configure your web browser to use a SOCKS proxy.
+6. Configure your web browser to use a SOCKS proxy on port 8888.
 
 Steps 2, 5, and 6 will require some work to determine the proper procedure for your
 environment.  Some guidance is available below.
