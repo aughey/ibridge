@@ -109,6 +109,16 @@ server on port 11111.
 
 This usage is possibly more secure, but levies additional requirements on the server.
 
+## Third Party Software Used
+
+iBridge leverages several third party packages.
+
+* socket.io for websocket handling http://socket.io
+* optimist for command line option parsing
+* jquery for DOM processing on the browser
+* underscore.js for javascript utility functions
+* node-socks for native SOCKSv5 handling https://github.com/gvangool/node-socks
+
 ## Theory of Operation
 
 Hard core users can read up on the theory of operation https://github.com/aughey/ibridge/blob/master/THEORY.md
