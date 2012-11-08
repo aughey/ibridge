@@ -51,7 +51,7 @@ var handle_connect = function(socket) {
 
 io.sockets.on('connection', handle_connect);
 
-return;
+if(false) {
 
 // Example tunnel_command: 'ssh -N localhost -D 11111 -p 12345'
 var tunnel_command = argv['e']
@@ -117,3 +117,4 @@ var netserver = net.createServer(function(c) {
 });
 
 netserver.listen(12345, '127.0.0.1');
+}
