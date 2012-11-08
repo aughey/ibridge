@@ -5,6 +5,7 @@ var argv = require('optimist').argv;
 var io = common.newServer(argv['p'] || 3001);
 
 io.sockets.on('connection', function(socket) {
+   console.log("Connection to server websocket");
 	var c = null;
 	socket.on('data',function(d) {
 		if(d['c'] == 'x') {
