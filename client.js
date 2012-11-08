@@ -10,9 +10,11 @@ var handle_connect = function(socket) {
 	io.sockets.removeListener('connection',handle_connect);
 	var connection = null;
 	var netserver = net.createServer();
+	var listening = true;
 	netserver.on('connection',function(c) {
 		connection = c;
 		netserver.close();
+		listening = false;
 		console.log("Connection to netserver client");
 		socket.emit('data', {c: 'c'});
 		c.on('data', function(d) {
@@ -24,15 +26,20 @@ var handle_connect = function(socket) {
 			if(d['c'] == 'd') {
 				c.write(new Buffer(d['d'],'binary'));
 			} else if(d['c'] == 'x') {
+				console.log("Remote asked us to close");
 				c.destroy();
 			}			
 		}
-		c.on('end', function() {
+		c.on('close', function() {
 			// Tell the remote side to close.
+			console.log("netserver client disconnected");
 			socket.emit('data',{c:'x'});
 			socket.removeListener('data',handle_socket_data);
 			connection = null;
-			netserver.listen(12345, '127.0.0.1');
+			if(netserver) {
+				netserver.listen(12345, '127.0.0.1');
+				listening = true;
+			}
 		});
 		socket.on('data',handle_socket_data);
 	});
@@ -43,7 +50,9 @@ var handle_connect = function(socket) {
 		if(connection) {
 			connection.destroy();
 		}
-		netserver.close();
+		if(listening) {
+			netserver.close();
+		}
 		netserver = null;
 		io.sockets.on('connection',handle_connect);
 	})
