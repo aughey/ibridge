@@ -2,7 +2,56 @@ var common = require("./common");
 var net = require('net');
 var argv = require('optimist')['default']({p:3000,e:null}).demand('s').describe('e','command to run when tunnel is active.  eg.  "ssh -N localhost -D 11111 -p 12345"').describe('s','Remote server url').argv;
 
-var server = common.newServer(argv['p'],[['/serveraddress',argv.s]]);
+var io = common.newServer(argv['p'],[['/serveraddress',argv.s]]);
+
+var handle_connect = function(socket) {
+	console.log("Connection to websocket");
+	// Only one connection allowed.
+	io.sockets.removeListener('connection',handle_connect);
+	var connection = null;
+	var netserver = net.createServer();
+	netserver.on('connection',function(c) {
+		connection = c;
+		netserver.close();
+		console.log("Connection to netserver client");
+		socket.emit('data', {c: 'c'});
+		c.on('data', function(d) {
+			if(d && d.length > 0) {
+				socket.emit('data', {c:'d',d: d.toString('binary')});
+			}		
+		});
+		var handle_socket_data = function(d) {
+			if(d['c'] == 'd') {
+				c.write(new Buffer(d['d'],'binary'));
+			} else if(d['c'] == 'x') {
+				c.destroy();
+			}			
+		}
+		c.on('end', function() {
+			// Tell the remote side to close.
+			socket.emit('data',{c:'x'});
+			socket.removeListener('data',handle_socket_data);
+			connection = null;
+			netserver.listen(12345, '127.0.0.1');
+		});
+		socket.on('data',handle_socket_data);
+	});
+	netserver.listen(12345, '127.0.0.1');
+
+	socket.on('disconnect',function() {
+		console.log("Disconnected from websocket");
+		if(connection) {
+			connection.destroy();
+		}
+		netserver.close();
+		netserver = null;
+		io.sockets.on('connection',handle_connect);
+	})
+}
+
+io.sockets.on('connection', handle_connect);
+
+return;
 
 // Example tunnel_command: 'ssh -N localhost -D 11111 -p 12345'
 var tunnel_command = argv['e']
@@ -36,9 +85,9 @@ function check_ping() {
 }
 
 // Handle the ping message
-server.newGlobalEndpoint('p',function() {
-	check_ping();
-});
+//server.newGlobalEndpoint('p',function() {
+//	check_ping();
+//});
 
 var netserver = net.createServer(function(c) {
 	console.log("Connection to client");

@@ -5,14 +5,9 @@ var argv = require('optimist')['default']({
 	p: 3000,
 }).demand('s').describe('s', 'server address.  eg. http://server.slicehost.com:3001').describe('p','Local http server port').argv;
 
-var server = common.newServer(argv['p'], [
+var bridge = common.newServer(argv['p'], [
 	['/serveraddress', argv.s]
 ]);
-
-
-// Handle the ping message
-server.newGlobalEndpoint('p', function() {
-});
 
 var net = require('net'),
 	socks = require('./socks.js');
@@ -72,7 +67,7 @@ var HOST = '127.0.0.1',
 		//console.log('Got through the first part of the SOCKS protocol.')
 		//console.log("Connecting to " + address + ":" + port)
 		//var proxy = net.createConnection(port, address, proxy_ready);
-		var proxy = createRemoteConnection(port, address, proxy_ready);
+		var proxy = bridge.createRemoteConnection(port, address, proxy_ready);
 
 		proxy.on('data', function(d) {
 		//	try {

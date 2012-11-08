@@ -14,7 +14,7 @@ function init(serveraddress) {
 		$('#clientconnected').addClass('greenstatus');
 	})
 	socket.on('disconnect', function() {
-		status("Disconnected from server");
+		status("Disconnected from client");
 		$('#clientconnected').removeClass('greenstatus');
 	})
 
@@ -37,8 +37,10 @@ function init(serveraddress) {
 	socket.on('data', function(d) {
 		if(d['d']) {
 			clientcount += d.d.length;
-			updateCount();
+		} else {
+			clientcount += 1;
 		}
+		updateCount();
 		serversocket.emit('data', d);
 	});
 	serversocket.on('data', function(d) {

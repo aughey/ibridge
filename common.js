@@ -39,6 +39,8 @@ exports.newServer = function(port,static) {
 
   io.set('log level', 2);
 
+  return io;
+
   var endpointindex = 0;
 
   function createEndpoints(socket) {
@@ -134,19 +136,36 @@ exports.newServer = function(port,static) {
     })
   })
 
-
-  return {
-    // Define a global endpoint creator that
-    // is associated with all connected sockets
-    newGlobalEndpoint: function(id, cb) {
-      global_endpoints.push([id,cb])
-    },
-    endpoint: function() {
+  function lastConnected() {
       if(connected_endpoints.length == 0) {
         return null;
       } else {
         return connected_endpoints[connected_endpoints.length-1];
-      }
+      }    
+  }
+
+  function createRemoteConnection(port, address, ready) {
+    var ep = lastConnected();
+    var emitter = new events.EventEmitter;
+    emitter.on('connected',ready);
+
+    function shutdown() {
+      emitter.emit('end');
+      emitter.removeAllListeners();
     }
+
+    if(!ep) {
+      process.nextTick(function() {
+        emitter.emit('error');
+        shutdown();
+      });
+    }
+
+  }
+
+  return {
+    // Define a global endpoint creator that
+    // is associated with all connected sockets
+    createRemoteConnection: createRemoteConnection,
   }
 }

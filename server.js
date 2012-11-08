@@ -1,59 +1,40 @@
 var common = require("./common");
 var net = require('net');
-var argv = require('optimist').boolean('o').describe('o','Allow open connections to any remote host').argv;
+var argv = require('optimist').argv;
 
-var server = common.newServer(argv['p'] || 3001);
-var openconnection = argv.o || false
+var io = common.newServer(argv['p'] || 3001);
 
-if(openconnection) {
-	console.log("Warning: running with openconnection.  Possibly problematic.")
-}
-
-server.newEndpoint('open', function(open_data) {
-	var host = open_data['host'] || "localhost"
-	var port = open_data['port'] || 22
-	if(!openconnection) {
-		host = 'localhost'
-		port = 22;
-	}
-	var c = net.connect(port, host, function() {
-
-		function writeData(d) {
-			c.write(new Buffer(d.d, 'binary'));
+io.sockets.on('connection', function(socket) {
+	var c = null;
+	socket.on('data',function(d) {
+		if(d['c'] == 'x') {
+			// Close request
+			if(c) {
+				c.destroy();
+			}
+		} else if(d['c'] == 'c') {
+			// Connect request
+			c = net.connect(22,'localhost', function() {
+				c.on('data', function(d) {
+					socket.emit('data',{c:'d', d: d.toString('binary')});
+				})
+				c.on('close', function() {
+					socket.emit('data',{c: 'x'});
+					c = null;
+				})
+			})
+		} else if(d['c'] == 'd') {
+			// Data to write to the socket.
+			if(!c) {
+				console.log("Attempted write to unconnected socket")
+			} else {
+				c.write(new Buffer(d['d'],'binary'));
+			}
 		}
-		var ep = server.newEndpoint(null, writeData, function() {
-			c.end();
-		});
-
-		c.on('data', function(d) {
-			server.sendMessage({
-				c: open_data.i,
-				s: ep.id,
-				d: d.toString('binary')
-			});
-		})
-		c.on('close', function() {
-			server.sendMessage({
-				c: 'x',
-				i: open_data.i
-			});
-			ep.close();
-		})
-		// Let the remote side know this endpoint
-		server.sendMessage({
-			c: open_data.i,
-			i: ep.id
-		});
-	})
-	c.on('error',function(err) {
-		console.log("Error with connection to " + host + ":" + port);
-		console.log(err);
+	});
+	socket.on('disconnect', function() {
+		if(c) {
+			c.dst
+		}
 	})
 });
-
-setInterval(function() {
-	// Ping the other side.
-	server.sendMessage({
-		c: 'p'
-	})
-}, 1000);
