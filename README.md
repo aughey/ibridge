@@ -117,7 +117,6 @@ iBridge leverages several third party packages.
 * optimist for command line option parsing https://github.com/substack/node-optimist
 * jquery for DOM processing on the browser http://jquery.com/
 * underscore.js for javascript utility functions http://underscorejs.org
-* node-socks for native SOCKSv5 handling https://github.com/gvangool/node-socks
 * jquery-qrcode for generating qr codes in the ui http://github.com/jeromeetienne/jquery-qrcode
 
 ## Theory of Operation
